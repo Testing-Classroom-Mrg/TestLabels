@@ -1,0 +1,7 @@
+Bug: ['**/bugfix/**', '**/bug/**']
+Driver: ['all/**', 'driver/**', '*_driver-*']
+Hotfix: '**/hotfix/**'
+Localization: 'translations_*'
+Passenger: ['all/**', 'passenger/**', '*_passenger-*']
+Release: '**/release/**'
+Sandbox: 'sandbox/**'
