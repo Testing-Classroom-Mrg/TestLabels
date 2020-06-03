@@ -19,8 +19,24 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.number,
-              assignees: context.payload.author
+              assignees: context.payload.user.login
             })
+
+  add-reviewers:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Add reviewers
+          if: ${{ github.event.action == 'opened' }}
+          uses: actions/github-script@v1.1.0
+          with:
+            github-token: ${{github.token}}
+            script: |
+              github.pulls.createReviewRequest({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.number,
+                reviewers: [george-theocharis, timlam9]
+              })
 
   # Add labels based on branch name
   add-branch-labels:
