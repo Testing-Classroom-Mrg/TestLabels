@@ -1,14 +1,24 @@
-name: Pull Request Labeler
+name: Pull Request Creator
 
 on:
   pull_request:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
-  pr-labeler:
+  # Add the pull request creator as assignee
+  pr-assignee:
     runs-on: ubuntu-latest
     steps:
-      # Add labels based on branch name
+      - name: Assign PR to creator
+        if: ${{ github.event.action == 'opened' }}
+        uses: thomaseizinger/assign-pr-creator-action@v1.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Add labels based on branch name
+  pr-branch-labeler:
+    runs-on: ubuntu-latest
+    steps:
       - name: Add branch name labels
         if: ${{ github.event.action == 'opened' }}
         uses: TimonVS/pr-labeler-action@v3
@@ -17,7 +27,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        # Clear all labels that indicate pull request status
+  # Add pull request status-indicating labels
+  pr-status-labeler:
+    runs-on: ubuntu-latest
+    steps:
       - name: Clear status label
         uses: actions/github-script@0.9.0
         with:
@@ -57,7 +70,6 @@ jobs:
                 name: 'Declined'
               })
             }
-        # Add pull request status-indicating labels
       - name: Add Ready for Review label
         if: ${{ (github.event.action == 'opened' || github.event.action == 'ready_for_review' || github.event.action == 'reopened') && !github.event.pull_request.draft }}
         uses: actions/github-script@0.9.0
@@ -106,3 +118,4 @@ jobs:
               number: context.payload.number,
               labels: ['Declined']
             })
+
