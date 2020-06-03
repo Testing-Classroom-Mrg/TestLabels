@@ -6,15 +6,21 @@ on:
 
 jobs:
   # Add pull request reviewers and the creator as assignee
-  add-reviewers-and-assignee:
+  add-assignee:
     runs-on: ubuntu-latest
     steps:
-      - name: Add reviewers and assignee
+      - name: Add assignee
         if: ${{ github.event.action == 'opened' }}
-        uses: kentaro-m/auto-assign-action@v1.1.0
+        uses: actions/github-script@1.1.0
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: .github/pr-reviewers-and-assignee.yml
+          github-token: ${{github.token}}
+          script: |
+            github.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.number,
+              assignees: context.payload.author
+            })
 
   # Add labels based on branch name
   add-branch-labels:
@@ -33,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clear status label
-        uses: actions/github-script@0.9.0
+        uses: actions/github-script@1.1.0
         with:
           github-token: ${{github.token}}
           script: |
@@ -73,7 +79,7 @@ jobs:
             }
       - name: Add Ready for Review label
         if: ${{ (github.event.action == 'opened' || github.event.action == 'ready_for_review' || github.event.action == 'reopened') && !github.event.pull_request.draft }}
-        uses: actions/github-script@0.9.0
+        uses: actions/github-script@1.1.0
         with:
           github-token: ${{github.token}}
           script: |
@@ -85,7 +91,7 @@ jobs:
             })
       - name: Add WIP label
         if: ${{ github.event.action == 'opened' && github.event.pull_request.draft }}
-        uses: actions/github-script@0.9.0
+        uses: actions/github-script@1.1.0
         with:
           github-token: ${{github.token}}
           script: |
@@ -97,7 +103,7 @@ jobs:
             })
       - name: Add Ready label
         if: ${{ github.event.action == 'closed' && github.event.pull_request.merged}}
-        uses: actions/github-script@0.9.0
+        uses: actions/github-script@1.1.0
         with:
           github-token: ${{github.token}}
           script: |
@@ -109,7 +115,7 @@ jobs:
             })
       - name: Add Declined label
         if: ${{ github.event.action == 'closed' && !github.event.pull_request.merged}}
-        uses: actions/github-script@0.9.0
+        uses: actions/github-script@1.1.0
         with:
           github-token: ${{github.token}}
           script: |
