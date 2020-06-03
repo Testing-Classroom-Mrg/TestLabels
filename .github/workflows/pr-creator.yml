@@ -5,6 +5,16 @@ on:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
+  echo-payload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo payload
+        if: ${{ github.event.action == 'opened' }}
+        uses: actions/github-script@v1.1.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            console.log(context.payload)
   # Add pull request reviewers and the creator as assignee
   add-assignee:
     runs-on: ubuntu-latest
