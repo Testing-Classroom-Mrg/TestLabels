@@ -19,7 +19,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.number,
-              assignees: context.payload.user.login
+              assignees: context.payload.user
             })
 
   add-reviewers:
@@ -35,7 +35,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.payload.number,
-                reviewers: [george-theocharis, timlam9]
+                reviewers: ['george-theocharis', 'timlam9']
               })
 
   # Add labels based on branch name
