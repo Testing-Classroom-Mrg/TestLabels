@@ -5,30 +5,31 @@ on:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
-  # Add the pull request creator as assignee
-  add-assignee:
+  # Add pull request reviewers and the creator as assignee
+  add-reviewers-and-assignee:
     runs-on: ubuntu-latest
     steps:
-      - name: Assign PR to creator
+      - name: Add reviewers and assignee
         if: ${{ github.event.action == 'opened' }}
-        uses: thomaseizinger/assign-pr-creator-action@v1.0.0
+        uses: kentaro-m/auto-assign-action@v1.1.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: ".github/pr-reviewers-and-assignee.yml"
 
   # Add labels based on branch name
   add-branch-labels:
     runs-on: ubuntu-latest
     steps:
-      - name: Add branch name labels
+      - name: Add branch labels
         if: ${{ github.event.action == 'opened' }}
         uses: TimonVS/pr-labeler-action@v3
         with:
-          configuration-path: .github/pull-request-labels.yml
+          configuration-path: .github/pr-labels.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Add pull request status-indicating labels
-  add-status-labels:
+  add-status-label:
     runs-on: ubuntu-latest
     steps:
       - name: Clear status label
