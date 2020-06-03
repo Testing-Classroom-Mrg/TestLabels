@@ -2,3 +2,4 @@ addReviewers: true
 addAssignees: author
 reviewers:
   - george-theocharis
+  - timlam9
