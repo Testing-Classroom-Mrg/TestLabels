@@ -1,4 +1,4 @@
-name: Pull Request Creator
+name: Optimus PRime
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   # Add the pull request creator as assignee
-  pr-assignee:
+  add assignee:
     runs-on: ubuntu-latest
     steps:
       - name: Assign PR to creator
@@ -16,7 +16,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
   # Add labels based on branch name
-  pr-branch-labeler:
+  add branch labels:
     runs-on: ubuntu-latest
     steps:
       - name: Add branch name labels
@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Add pull request status-indicating labels
-  pr-status-labeler:
+  add status labels:
     runs-on: ubuntu-latest
     steps:
       - name: Clear status label
@@ -103,7 +103,7 @@ jobs:
             github.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              number: context.payload.number,
+              issue_number: context.payload.number,
               labels: ['Ready']
             })
       - name: Add Declined label
@@ -115,7 +115,6 @@ jobs:
             github.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              number: context.payload.number,
+              issue_number: context.payload.number,
               labels: ['Declined']
             })
-
