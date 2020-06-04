@@ -39,7 +39,7 @@ jobs:
           || github.event.action == 'ready_for_review') && github.actor != 'transifex-integration' }}
         uses: actions/github-script@v1.1.0
         with:
-          github-token: ${context.payload.pull_request.user.node_id}
+          github-token: ${context.payload.pull_request.user}
           script: |
             github.pulls.createReviewRequest({
               owner: context.repo.owner,
