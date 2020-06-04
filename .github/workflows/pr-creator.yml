@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add assignee
-        if: ${{ github.event.action == 'opened' && !github.event.pull_request.head.ref.contains('translations_') }}
+        if: ${{ github.event.action == 'opened' && !startsWith(github.event.pull_request.head.ref, 'translations_') }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
@@ -27,7 +27,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Add reviewers
-          if: ${{ github.event.action == 'opened' && !github.event.pull_request.head.ref.contains('translations_') }}
+          if: ${{ github.event.action == 'opened' && !startsWith(github.event.pull_request.head.ref, 'translations_') }}
           uses: actions/github-script@v1.1.0
           with:
             github-token: ${{github.token}}
