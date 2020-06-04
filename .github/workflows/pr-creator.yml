@@ -5,18 +5,13 @@ on:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
-  actor:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Actor
-        run: echo ${{ github.actor }}
   # Add PR assignee.
   # The assignee added is the PR author.
   add-assignee:
     runs-on: ubuntu-latest
     steps:
       - name: Add assignee
-        if: ${{ github.event.action == 'opened' && !startsWith(github.event.pull_request.head.ref, 'translations_') }}
+        if: ${{ github.event.action == 'opened' && github.actor != 'jonnyPap' }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
@@ -37,7 +32,7 @@ jobs:
         if: |
           ${{ (github.event.action == 'opened' || github.event.action == 'ready_for_review'
           || github.event.action == 'reopened') && !github.event.pull_request.draft
-          && !startsWith(github.event.pull_request.head.ref, 'translations_') }}
+          && github.actor != 'jonnyPap' }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
