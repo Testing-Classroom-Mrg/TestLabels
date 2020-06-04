@@ -5,16 +5,13 @@ on:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
-  pr-status:
+  actor:
     runs-on: ubuntu-latest
     steps:
-      - name: Log PR
-        run: echo ${{ github.event.action }}
+      - name: Actor
+        run: echo github.actor
   # Add PR assignee.
   # The assignee added is the PR author.
-  # Triggered when:
-  #  - A PR is opened
-  #  - The branch name does NOT start with "translations_"
   add-assignee:
     runs-on: ubuntu-latest
     steps:
@@ -33,11 +30,6 @@ jobs:
 
   # Create a review request.
   # Add the android-devs pool as reviewer.
-  # Triggered when:
-  #   - A PR is opened and is NOT a draft
-  #   - A PR becomes ready for review
-  #   - A PR is reopened
-  #   - The branch name does NOT start with "translations_"
   request-review:
     runs-on: ubuntu-latest
     steps:
