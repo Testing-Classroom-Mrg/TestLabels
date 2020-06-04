@@ -5,12 +5,12 @@ on:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
-  # Add pull request reviewers and the creator as assignee
+  # Add pull request creator as assignee
   add-assignee:
     runs-on: ubuntu-latest
     steps:
       - name: Add assignee
-        if: ${{ github.event.action == 'opened' }}
+        if: ${{ github.event.action == 'opened' && !github.ref.contains(translations_) }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
@@ -22,11 +22,12 @@ jobs:
               assignees: context.payload.pull_request.user.login
             })
 
+  # Add pull request reviewers
   add-reviewers:
       runs-on: ubuntu-latest
       steps:
         - name: Add reviewers
-          if: ${{ github.event.action == 'opened' }}
+          if: ${{ github.event.action == 'opened' && !github.ref.contains(translations_) }}
           uses: actions/github-script@v1.1.0
           with:
             github-token: ${{github.token}}
@@ -35,7 +36,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: context.payload.number,
-                reviewers: ['jonnyPap']
+                reviewers: ['android-devs']
               })
 
   # Add labels based on branch name
