@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Actor
-        run: echo github.actor
+        run: echo ${{ github.actor }}
   # Add PR assignee.
   # The assignee added is the PR author.
   add-assignee:
