@@ -5,13 +5,18 @@ on:
     types: [opened, closed, ready_for_review, reopened]
 
 jobs:
+  echo-node-id:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo node id
+        run: echo ${{ github.actor }}
   # Add PR assignee.
   # The assignee added is the PR author.
   add-assignee:
     runs-on: ubuntu-latest
     steps:
       - name: Add assignee
-        if: ${{ github.event.action == 'opened' && github.actor != 'jonnyPap' }}
+        if: ${{ github.event.action == 'opened' && github.actor != 'transifex-integration' }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
@@ -30,18 +35,17 @@ jobs:
     steps:
       - name: Add reviewers
         if: |
-          ${{ (github.event.action == 'opened' || github.event.action == 'ready_for_review'
-          || github.event.action == 'reopened') && !github.event.pull_request.draft
-          && github.actor != 'jonnyPap' }}
+          ${{ ((github.event.action == 'opened' && !github.event.pull_request.draft)
+          || github.event.action == 'ready_for_review') && github.actor != 'transifex-integration' }}
         uses: actions/github-script@v1.1.0
         with:
-          github-token: ${{github.token}}
+          github-token: ${{ context.payload.pull_request.user.node_id }}
           script: |
             github.pulls.createReviewRequest({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.number,
-              reviewers: ['android-devs']
+              reviewers: ['timlam9']
             })
 
   # Add labels based on branch name
@@ -101,8 +105,8 @@ jobs:
             }
       - name: Add Ready for Review label
         if: |
-          ${{ (github.event.action == 'opened' || github.event.action == 'ready_for_review'
-          || github.event.action == 'reopened') && !github.event.pull_request.draft }}
+          ${{ (github.event.action == 'opened' && !github.event.pull_request.draft)
+          || github.event.action == 'ready_for_review' || github.event.action == 'reopened' }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
