@@ -2,7 +2,7 @@ name: Optimus PRime
 
 on:
   pull_request:
-    types: [opened, closed, ready_for_review, reopened]
+    types: [opened, closed, ready_for_review, reopened, edited]
 
 jobs:
   pr-status:
