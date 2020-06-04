@@ -7,7 +7,9 @@ on:
 jobs:
   pr-status:
     runs-on: ubuntu-latest
-    run: echo ${{ github.event.action }}
+    steps:
+      - name: Log PR
+        run: echo ${{ github.event.action }}
   # Add PR assignee.
   # The assignee added is the PR author.
   # Triggered when:
