@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Logger
-        uses: actions/github/script@v2
+        uses: actions/github-script@v2
         with:
           github-token: ${{ github.token }}
           script: |
