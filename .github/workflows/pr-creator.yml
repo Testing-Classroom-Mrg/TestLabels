@@ -13,7 +13,12 @@ jobs:
         with:
           github-token: ${{ github.token }}
           script: |
-            console.log(github)
+            const pr = github.pulls.get({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               pull_number: context.payload.number,
+             });
+            console.log(pr)
 
   # Add PR assignee.
   # The assignee added is the PR author.
