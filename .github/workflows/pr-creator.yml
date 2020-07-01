@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: log
-        run: echo github
+        run: echo $GITHUB_REF
   # Create a review request.
   # Add the android-devs pool as reviewer.
 #  request-review:
