@@ -7,65 +7,57 @@ on:
 jobs:
   # Add PR assignee.
   # The assignee added is the PR author.
-  add-assignee:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add assignee
-        if: ${{ github.event.action == 'opened' && !startsWith(github.head_ref, 'translations_') }}
-        uses: actions/github-script@v1.1.0
-        with:
-          github-token: ${{github.token}}
-          script: |
-            github.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.number,
-              assignees: context.payload.pull_request.user.login
-            })
-
-  log-reviewers:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get reviewers
-        id: has-reviewers
-        uses: actions/github-script@v1.1.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const reviewers = await github.pulls.listRequestedReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.number
-            });
-            return reviewers > 0;
-
-      - name: Toggle actions on reviewers count
-        if: steps.has-reviewers
-        run: echo 'SUCCESS'
+#  add-assignee:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Add assignee
+#        if: ${{ github.event.action == 'opened' && !startsWith(github.head_ref, 'translations_') }}
+#        uses: actions/github-script@v1.1.0
+#        with:
+#          github-token: ${{github.token}}
+#          script: |
+#            github.issues.addAssignees({
+#              owner: context.repo.owner,
+#              repo: context.repo.repo,
+#              issue_number: context.payload.number,
+#              assignees: context.payload.pull_request.user.login
+#            })
 
   # Create a review request.
   # Add the android-devs pool as reviewer.
-#  request-review:
-#    runs-on: ubuntu-latest
-#    if: ((github.event.action == 'opened' && !github.event.pull_request.draft) || github.event.action == 'ready_for_review') && github.actor != 'transifex-integration'
-#    steps:
-#      - name: Get token
-#        id: get_token
-#        uses: machine-learning-apps/actions-app-token@master
-#        with:
-#          APP_PEM: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBdkY3b0xTd3BUZVU5d1VoNE52VGljK1c5UXRQMStLTUtNVEZkQXJBK0J1UVNBdmxvCkEwZ3RLZlVUQVowdXQ2NkVEV0lFNEZEaHFoeUw0d3NVbFBHWHNNUVNNZ1NXNE4rYTQrVXVxNE53SWVXOVVodzgKVHAyUGJ2eXloMFYzTUliM3UwWVgwSHJLNjlQcXlaeXI5a1dkYmhrK0hNWFZUS285L294aXdWWnc2ZmlhOVhQNApGR29tWitzWXNHZTcvYVhmSjhrRUVDT2pLdjAwQ3JYVHVOelBaRENhQzF3MTFZWm11MEdYVllRTW5UU01CR0Z2ClMxeFhDZHcvaU5vakVQNFliSndTSzdxdmpkVXluR2s2cHk0MHNGWXhZRm1YMlFXUE1SaVZxNUpGbFd2ZGsxRHQKU0JhdEJUT0Y3aU55dFQyd3Jva3ZqTnFsZ3Yxbk1DazdEY3BrWFFJREFRQUJBb0lCQUhEanYra3lpaDV3d0MzUgpySm5pOE1QY2J5eFpzeE9yUWpSeERQakxmcURLbGpES0g1ZTM3Ymt6Y295SkVySnFHQ0dkR0tjR1VmZU0zQmpaClR5QmtHVENLa1EwQXl4dEJacVlsZDI2NmVyMFYzZndUaCtEbGRFeGpqT3FjcXUyZU5XRTZoSk1ndy9QSk1QQmEKd0lQNi9IbzdEb3BYMVpqNGZlYkxZM1BTeGlDeElOVmZPWExXRFZENmQwU3lSbStBcGNweCtEYVNqMDlrYXY3OAo0Yk1BbDYzTU85Y3FHeW9TY2xSamtmU0VIUTJvbXowamhxK0dWajhHc240RW94VHFDallHRXAvMnFSVHUwR29vCnJYZUZWdnROakt5dDFLSkVZQmVPT3o5R2VDM3BmbWprSXhYMW9oTTVydmlGZmVraHc5bTdlU1ZaUEx1ZWt0U0YKNEtDaEtWRUNnWUVBN09KeHZ1RGlhQWc0ZTloRWFQdktMckQ1NTdIRWZhWjJvRDBmU3BVV3NJVXRqQm82OEJSWgpMMmwvL0E0VFRkRVJkMnVvSzdvTi85THA4a1AxbUNQcWZkaHVHR3ZnMFg0MWdoTjZiVnZGUUVuTW14bHFQTzl6Cjhwdml3eWpOcWYvdjd1SUh6UEp0L0NMenlZYm5WaU5oak5zSDR5Z216UGR0ZEM5UWhUb2E2c01DZ1lFQXk1SkQKNS8vOVJsaFl5eG51ODVLUUxUbGI3eFFGeVM4eHNwKzZkVk5ySExlNDNvVmpZQ29OcXAzdERacVIrZ3diVGlBNgpOM24zQ2xpRlhSQmp2WVdDL1Jxb0Y1YW1LUGZmZW85SmlOckMxWlJROVlEVENGRGltZ2M3elBLYThzcTg5Q0JCCjA0b0lYK1liODNQbkdmSUtrVTR0Z3JqTGdXN3dtNTIrSEFNdFFsOENnWUJhazM5UXNDYUNCdHFxS0JpSVYvYUkKQWUyY2RUR2ZwZDNvQ1ZjRXFwc2haZHJ6bmpmNUFwN1RiVENkelRmK1lqbWVneENybjVtb3Z4bnJJNmN0eEZYdQpScXBhTmkyaGpQT2l5QlhnNk4wMFpzT1FicGhic21lUVZhRFFaTEszRlFER1E3RWQ0WGpDbHc3R2VRbk51dnVhCjQwbFJ4MUdHdi9rZkd0UmNETXFzQndLQmdGNm0rM3Y3d3IvYWhDNnJPRGQ0aGlFQThvWVBRVUZ4K0NHZHN3eXEKWkx0TmtWK2xsYmM0MW5IbVREcHZERUMvTUZMN0dSYUNWeU13VlpJWDlNaENNODJMZjJ5NFZ6bmxScnV0cy9zMQovREZpYk9JNXErWEo5aEs0R2s0STM1TFVRVmNoU0hvYlRCbUszS1F0MTk1d2RBbHIyQzFYendlM2xaaEZtQWRlClVzVHhBb0dCQU9rR0hJcU9FM21na2JSLzZoNmwrOS9oWTB1T0NpL0NUVHIwcFE0R29jMVI4Z2FmaXdMSE43SjIKYVdIL1FybjZSdlhwREowSjB4blcwdEV6NC9GdmxtcjhNNUZSWWhSYU94cFdJSEd1TWpxZCt3akxxcnE4L0NNYgpXMmlQbkpBaENyS21JYnQ2czExREJKaFI4Q1pNL0dIM2pTM0lXeUxUVHNrQSthamhOWE1DCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
-#          APP_ID: '67599'
-#      - name: Add reviewers
-#        uses: actions/github-script@v1.1.0
-#        with:
-#          github-token: ${{ steps.get_token.outputs.app_token }}
-#          script: |
-#            github.pulls.createReviewRequest({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              pull_number: context.payload.number,
-#              team_reviewers: ['Autobots']
-#            })
+  request-review:
+    runs-on: ubuntu-latest
+    if: ((github.event.action == 'opened' && !github.event.pull_request.draft) || github.event.action == 'ready_for_review')
+    steps:
+      - name: Get token
+        id: get_token
+        uses: machine-learning-apps/actions-app-token@master
+        with:
+          APP_PEM: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBdkY3b0xTd3BUZVU5d1VoNE52VGljK1c5UXRQMStLTUtNVEZkQXJBK0J1UVNBdmxvCkEwZ3RLZlVUQVowdXQ2NkVEV0lFNEZEaHFoeUw0d3NVbFBHWHNNUVNNZ1NXNE4rYTQrVXVxNE53SWVXOVVodzgKVHAyUGJ2eXloMFYzTUliM3UwWVgwSHJLNjlQcXlaeXI5a1dkYmhrK0hNWFZUS285L294aXdWWnc2ZmlhOVhQNApGR29tWitzWXNHZTcvYVhmSjhrRUVDT2pLdjAwQ3JYVHVOelBaRENhQzF3MTFZWm11MEdYVllRTW5UU01CR0Z2ClMxeFhDZHcvaU5vakVQNFliSndTSzdxdmpkVXluR2s2cHk0MHNGWXhZRm1YMlFXUE1SaVZxNUpGbFd2ZGsxRHQKU0JhdEJUT0Y3aU55dFQyd3Jva3ZqTnFsZ3Yxbk1DazdEY3BrWFFJREFRQUJBb0lCQUhEanYra3lpaDV3d0MzUgpySm5pOE1QY2J5eFpzeE9yUWpSeERQakxmcURLbGpES0g1ZTM3Ymt6Y295SkVySnFHQ0dkR0tjR1VmZU0zQmpaClR5QmtHVENLa1EwQXl4dEJacVlsZDI2NmVyMFYzZndUaCtEbGRFeGpqT3FjcXUyZU5XRTZoSk1ndy9QSk1QQmEKd0lQNi9IbzdEb3BYMVpqNGZlYkxZM1BTeGlDeElOVmZPWExXRFZENmQwU3lSbStBcGNweCtEYVNqMDlrYXY3OAo0Yk1BbDYzTU85Y3FHeW9TY2xSamtmU0VIUTJvbXowamhxK0dWajhHc240RW94VHFDallHRXAvMnFSVHUwR29vCnJYZUZWdnROakt5dDFLSkVZQmVPT3o5R2VDM3BmbWprSXhYMW9oTTVydmlGZmVraHc5bTdlU1ZaUEx1ZWt0U0YKNEtDaEtWRUNnWUVBN09KeHZ1RGlhQWc0ZTloRWFQdktMckQ1NTdIRWZhWjJvRDBmU3BVV3NJVXRqQm82OEJSWgpMMmwvL0E0VFRkRVJkMnVvSzdvTi85THA4a1AxbUNQcWZkaHVHR3ZnMFg0MWdoTjZiVnZGUUVuTW14bHFQTzl6Cjhwdml3eWpOcWYvdjd1SUh6UEp0L0NMenlZYm5WaU5oak5zSDR5Z216UGR0ZEM5UWhUb2E2c01DZ1lFQXk1SkQKNS8vOVJsaFl5eG51ODVLUUxUbGI3eFFGeVM4eHNwKzZkVk5ySExlNDNvVmpZQ29OcXAzdERacVIrZ3diVGlBNgpOM24zQ2xpRlhSQmp2WVdDL1Jxb0Y1YW1LUGZmZW85SmlOckMxWlJROVlEVENGRGltZ2M3elBLYThzcTg5Q0JCCjA0b0lYK1liODNQbkdmSUtrVTR0Z3JqTGdXN3dtNTIrSEFNdFFsOENnWUJhazM5UXNDYUNCdHFxS0JpSVYvYUkKQWUyY2RUR2ZwZDNvQ1ZjRXFwc2haZHJ6bmpmNUFwN1RiVENkelRmK1lqbWVneENybjVtb3Z4bnJJNmN0eEZYdQpScXBhTmkyaGpQT2l5QlhnNk4wMFpzT1FicGhic21lUVZhRFFaTEszRlFER1E3RWQ0WGpDbHc3R2VRbk51dnVhCjQwbFJ4MUdHdi9rZkd0UmNETXFzQndLQmdGNm0rM3Y3d3IvYWhDNnJPRGQ0aGlFQThvWVBRVUZ4K0NHZHN3eXEKWkx0TmtWK2xsYmM0MW5IbVREcHZERUMvTUZMN0dSYUNWeU13VlpJWDlNaENNODJMZjJ5NFZ6bmxScnV0cy9zMQovREZpYk9JNXErWEo5aEs0R2s0STM1TFVRVmNoU0hvYlRCbUszS1F0MTk1d2RBbHIyQzFYendlM2xaaEZtQWRlClVzVHhBb0dCQU9rR0hJcU9FM21na2JSLzZoNmwrOS9oWTB1T0NpL0NUVHIwcFE0R29jMVI4Z2FmaXdMSE43SjIKYVdIL1FybjZSdlhwREowSjB4blcwdEV6NC9GdmxtcjhNNUZSWWhSYU94cFdJSEd1TWpxZCt3akxxcnE4L0NNYgpXMmlQbkpBaENyS21JYnQ2czExREJKaFI4Q1pNL0dIM2pTM0lXeUxUVHNrQSthamhOWE1DCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
+          APP_ID: '67599'
+      - name: Check reviewer count
+        id: has-reviewers
+        uses: actions/github-script@v1.1.0
+          with:
+            github-token: ${{ steps.get_token.outputs.app_token }}
+            script: |
+              return github.pulls.listRequestedReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.number
+              }) > 0
+      - name: Add reviewers
+        if: steps.has-reviewers.output
+        uses: actions/github-script@v1.1.0
+        with:
+          github-token: ${{ steps.get_token.outputs.app_token }}
+          script: |
+            github.pulls.createReviewRequest({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.number,
+              team_reviewers: ['Autobots']
+            })
 
   # Add labels based on branch name
 #  add-branch-labels:
