@@ -18,7 +18,7 @@ jobs:
                repo: context.repo.repo,
                pull_number: context.payload.number,
              });
-            console.log(pr.requested_reviewers)
+            console.log(pr)
 
   # Add PR assignee.
   # The assignee added is the PR author.
