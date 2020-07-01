@@ -13,8 +13,5 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    override fun onApplyThemeResource(theme: Resources.Theme?, resid: Int, first: Boolean) {
-        super.onApplyThemeResource(theme, resid, first)
-    }
 
 }
