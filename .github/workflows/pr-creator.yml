@@ -37,7 +37,7 @@ jobs:
           APP_ID: '67599'
       - name: Check reviewer count
         id: has-reviewers
-        uses: actions/github-script@v1.1.0
+        uses: actions/github-script@v2
           with:
             github-token: ${{ steps.get_token.outputs.app_token }}
             script: |
@@ -48,7 +48,7 @@ jobs:
               }) > 0
       - name: Add reviewers
         if: steps.has-reviewers.output
-        uses: actions/github-script@v1.1.0
+        uses: actions/github-script@v2
         with:
           github-token: ${{ steps.get_token.outputs.app_token }}
           script: |
