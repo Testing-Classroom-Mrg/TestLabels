@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add assignee
-        if: ${{ github.event.action == 'opened' && !startsWith(github.head_ref, 'translations_')) }}
+        if: ${{ github.event.action == 'opened' && !startsWith(github.head_ref, 'translations_') }}
         uses: actions/github-script@v1.1.0
         with:
           github-token: ${{github.token}}
