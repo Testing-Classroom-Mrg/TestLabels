@@ -23,13 +23,16 @@ jobs:
 #              assignees: context.payload.pull_request.user.login
 #            })
 
-  echo-bot-name:
+  log-head-ref:
     runs-on: ubuntu-latest
     steps:
       - name: log
-        run: |
-        echo $GITHUB_BASE_REF
-        echo $GITHUB_HEAD_REF
+        run: echo $GITHUB_HEAD_REF
+  log-base-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: log
+        run: echo $GITHUB_BASE_REF
   # Create a review request.
   # Add the android-devs pool as reviewer.
 #  request-review:
