@@ -26,12 +26,22 @@ jobs:
   log-reviewers:
     runs-on: ubuntu-latest
     steps:
-      - name: No reviewers
-        if: ${{ github.event.pull_request.requested_reviewers.length == 0 }}
-        run: echo 'NO REVIEWERS'
-      - name: Some reviewers
-        if: ${{ github.event.pull_request.requested_reviewers.length > 0 }}
-        run: echo 'SOME REVIEWERS'
+      - name: Get reviewers
+        id: has-reviewers
+        uses: actions/github-script@v1.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const reviewers = await github.pulls.listRequestedReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.number
+            });
+            return reviewers > 0;
+
+      - name: Toggle actions on reviewers count
+        if: steps.has-reviewers
+        run: echo 'SUCCESS'
 
   # Create a review request.
   # Add the android-devs pool as reviewer.
