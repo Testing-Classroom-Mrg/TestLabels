@@ -38,14 +38,14 @@ jobs:
       - name: Check reviewer count
         id: has-reviewers
         uses: actions/github-script@v2
-          with:
-            github-token: ${{ steps.get_token.outputs.app_token }}
-            script: |
-              return github.pulls.listRequestedReviewers({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: context.payload.number
-              }) > 0
+        with:
+          github-token: ${{ steps.get_token.outputs.app_token }}
+          script: |
+            return github.pulls.listRequestedReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.number
+            }) > 0
       - name: Add reviewers
         if: steps.has-reviewers.output
         uses: actions/github-script@v2
