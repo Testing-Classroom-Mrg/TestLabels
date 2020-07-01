@@ -7,11 +7,13 @@ on:
 jobs:
   logger:
     runs-on: ubuntu-latest
-    uses: actions/github/script@v2
-    with:
-      github-token: ${{ github.token }}
-      script: |
-        console.log(github)
+    steps:
+      - name: Logger
+        uses: actions/github/script@v2
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            console.log(github)
 
   # Add PR assignee.
   # The assignee added is the PR author.
