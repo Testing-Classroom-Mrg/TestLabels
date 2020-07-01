@@ -12,4 +12,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+    }
+
 }
