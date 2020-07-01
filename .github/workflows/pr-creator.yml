@@ -7,32 +7,32 @@ on:
 jobs:
   # Add PR assignee.
   # The assignee added is the PR author.
-#  add-assignee:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Add assignee
-#        if: ${{ github.event.action == 'opened' && github.actor != 'transifex-integration' }}
-#        uses: actions/github-script@v1.1.0
-#        with:
-#          github-token: ${{github.token}}
-#          script: |
-#            github.issues.addAssignees({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              issue_number: context.payload.number,
-#              assignees: context.payload.pull_request.user.login
-#            })
+  add-assignee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add assignee
+        if: ${{ github.event.action == 'opened' && !startsWith(github.head_ref, 'translations_')) }}
+        uses: actions/github-script@v1.1.0
+        with:
+          github-token: ${{github.token}}
+          script: |
+            github.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.number,
+              assignees: context.payload.pull_request.user.login
+            })
 
-  log-head-ref:
+  log-reviewers:
     runs-on: ubuntu-latest
     steps:
-      - name: log
-        run: echo $GITHUB_HEAD_REF
-  log-base-ref:
-    runs-on: ubuntu-latest
-    steps:
-      - name: log
-        run: echo $GITHUB_BASE_REF
+      - name: No reviewers
+        if: ${{ github.event.pull_request.requested_reviewers.length == 0 }}
+        run: echo 'NO REVIEWERS'
+      - name: Some reviewers
+        if: ${{ github.event.pull_request.requested_reviewers.length > 0 }}
+        run: echo 'SOME REVIEWERS'
+
   # Create a review request.
   # Add the android-devs pool as reviewer.
 #  request-review:
