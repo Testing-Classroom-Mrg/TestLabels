@@ -12,8 +12,5 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    override fun onActionModeFinished(mode: ActionMode?) {
-        super.onActionModeFinished(mode)
-    }
 
 }
