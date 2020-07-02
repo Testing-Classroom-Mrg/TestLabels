@@ -72,7 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-   Add pull request status-indicating labels
+  # Add pull request status-indicating labels
   add-status-label:
     runs-on: ubuntu-latest
     steps:
